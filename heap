@@ -1,0 +1,90 @@
+import java.util.Arrays;
+
+class MinHeap {
+    private int[] heap;
+    private int size;
+
+    public MinHeap(int capacity) {
+        heap = new int[capacity];
+    }
+
+    public void add(int value) {
+        // Eklenen elemanı dizinin sonuna ekle
+        heap[size] = value;
+        size++;
+
+        // Eklenen elemanın yerini doğru hale getir
+        int current = size - 1;
+        while (current != 0 && heap[current] < heap[parent(current)]) {
+            // Elemanı parent ile yer değiştir
+            swap(current, parent(current));
+            current = parent(current);
+        }
+    }
+
+    public int extractMin() {
+        // İlk elemanı döndür
+        int min = heap[0];
+
+        // Diziyi tekrar heap şekline getir
+        heap[0] = heap[size - 1];
+        size--;
+        heapify(0);
+
+        return min;
+    }
+
+    private void heapify(int current) {
+        int left = left_child(current);
+        int right = right_child(current);
+        int smallest = current;
+
+        // En küçük elemanı bul
+        if (left < size && heap[left] < heap[current]) {
+            smallest = left;
+        }
+        if (right < size && heap[right] < heap[smallest]) {
+            smallest = right;
+        }
+
+        // Eğer en küçük eleman current değilse, yerlerini değiştir
+        if (smallest != current) {
+            swap(current, smallest);
+            heapify(smallest);
+        }
+    }
+
+    private void swap(int i, int j) {
+        int temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+    }
+
+    private int parent(int i) {
+        return (i - 1) / 3;
+    }
+
+    private int left_child(int i) {
+        return 3 * i + 1;
+    }
+
+    private int right_child(int i) {
+        return 3 * i + 2;
+    }
+
+    public String toString() {
+        return Arrays.toString(heap);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MinHeap heap = new MinHeap(10);
+        heap.add(5);
+        heap.add(3);
+        heap.add(2);
+        heap.add(4);
+        heap.add(1);
+        System.out.println(heap); // [1, 3, 2, 4, 5]
+        System.out.println(heap.extractMin()); // 1
+        System.out.println(heap); // [2
